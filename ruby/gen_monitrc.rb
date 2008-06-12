@@ -31,7 +31,7 @@ count = ARGV[1].to_i
 erb = ERB.new monitrc
 monitrc_out = ""
 
-0.upto(count) do |increment|
+0.upto(count - 1) do |increment|
   port = start_port + increment
   monitrc_out << erb.result(binding)
 end
