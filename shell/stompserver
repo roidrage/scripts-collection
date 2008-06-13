@@ -1,0 +1,62 @@
+#! /bin/sh
+#
+# skeleton      example file to build /etc/init.d/ scripts.
+#               This file should be used to construct scripts for /etc/init.d.
+#
+#               Written by Miquel van Smoorenburg <miquels@cistron.nl>.
+#               Modified for Debian
+#               by Ian Murdock <imurdock@gnu.ai.mit.edu>.
+#
+# Version:      @(#)skeleton  1.9  26-Feb-2001  miquels@cistron.nl
+#
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/bin/stompserver
+NAME=stompserver
+DESC=stompserver
+PIDFILE=/srv/stompserver/log/$NAME.pid
+ARGS="-C /srv/stompserver/config/stompserver.conf"
+WORKDIR=/srv/stompserver
+
+test -x $DAEMON || exit 0
+
+set -e
+
+case "$1" in
+  start)
+        echo -n "Starting $DESC: "
+        start-stop-daemon --start --quiet --exec $DAEMON --chdir $WORKDIR
+--chuid deploy:users -- $ARGS
+        echo "$NAME."
+        ;;
+  stop)
+        echo -n "Stopping $DESC: "
+        start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+        echo "$NAME."
+        rm -f $PIDFILE
+        ;;
+
+  restart|force-reload)
+        #
+        #       If the "reload" option is implemented, move the "force-reload"
+        #       option to the "reload" entry above. If not, "force-reload" is
+        #       just the same as "restart".
+        #
+        echo -n "Restarting $DESC: "
+        start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+        rm -f $PIDFILE
+        sleep 1
+        start-stop-daemon --start --quiet --exec $DAEMON --chdir $WORKDIR
+--chuid deploy:users -- $ARGS
+        echo "$NAME."
+        ;;
+  *)
+        N=/etc/init.d/$NAME
+        # echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
+        echo "Usage: $N {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
+
