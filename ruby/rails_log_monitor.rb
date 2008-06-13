@@ -2,7 +2,13 @@
 
 # daemon to scrape response times from rails logs
 # Thrown together using code from http://onrails.org/articles/2007/08/31/monitoring-rails-performance-with-munin-and-a-mongrel
-# and the daemize code from the ferret server in acts_as_ferret (http://projects.jkraemer.net/acts_as_ferret)
+# and the daemize code from the ferret server in acts_as_ferret (http://projects.jkraemer.net/acts_as_ferret) for easier 
+# daemon handling of the rails log monitor itself.
+# 
+# Ignores monit's http test calls by default
+# 
+# Throw this in your lib directory. Run with ruby lib/rails_log_monitor.rb start. PID file for monit monitoring pleasure
+# is in log/rails_log_monitor.pid.
 
 require "#{File.dirname(__FILE__)}/../config/environment"
 require 'rubygems'
