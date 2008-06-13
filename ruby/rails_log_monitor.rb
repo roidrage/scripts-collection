@@ -7,8 +7,15 @@
 # 
 # Ignores monit's http test calls by default
 # 
-# Throw this in your lib directory. Run with ruby lib/rails_log_monitor.rb start. PID file for monit monitoring pleasure
+# Throw this in your lib directory. Run with ruby lib/rails_log_monitor.rb production start. PID file for monit monitoring pleasure
 # is in log/rails_log_monitor.pid.
+
+unless ["start", "stop"].include?(ARGV[1]) && ARGV[0]
+  puts "Usage: #{__FILE__} <environment> (start|stop)"
+  exit(0)
+end
+
+RAILS_ENV = ARGV[0]
 
 require "#{File.dirname(__FILE__)}/../config/environment"
 require 'rubygems'
@@ -20,6 +27,7 @@ PORT = ENV['PORT'] || "8888"
 LOGFILE = ENV['RAILS_LOG'] || "#{RAILS_ROOT}/log/#{RAILS_ENV}.log"
 
 IGNORE_PATTERNS = %r{^http:// /$}.freeze
+
 
 class Accumulator
   def initialize
@@ -171,6 +179,4 @@ class RailsLogMonitor
   end
 end
 
-puts "Usage: #{__FILE__} (start|stop)" unless ["start", "stop"].include?(ARGV[0])
-
-RailsLogMonitor.new.send(ARGV[0])
+RailsLogMonitor.new.send(ARGV[1])
